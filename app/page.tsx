@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const schedule = [
@@ -28,8 +29,17 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f3ed] text-[#171512]">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-        <a className="text-lg font-semibold tracking-[0.18em]" href="#">
-          TuDo Makerspace
+        <a className="flex items-center gap-3" href="#" aria-label="TuDo Makerspace">
+          <Image
+            alt=""
+            className="h-12 w-auto"
+            height={48}
+            src="/images/tudo-logo.svg"
+            width={88}
+          />
+          <span className="text-lg font-semibold tracking-[0.18em]">
+            Makerspace
+          </span>
         </a>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
           <a className="transition hover:text-[#171512]" href="#programm">
@@ -77,6 +87,14 @@ export default function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_15%,rgba(232,164,83,0.9),transparent_30%),linear-gradient(135deg,rgba(155,63,47,0.9),rgba(31,28,24,0.9)_55%,rgba(21,75,85,0.86))]" />
           <div className="absolute inset-x-8 top-8 h-40 rounded-full border border-white/20" />
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/45 to-transparent" />
+          <Image
+            alt="TuDo Makerspace Logo"
+            className="absolute left-1/2 top-[42%] w-[118%] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-20 invert"
+            height={765}
+            priority
+            src="/images/tudo-logo.svg"
+            width={1400}
+          />
           <div className="relative flex h-full min-h-[380px] flex-col justify-between">
             <div className="flex justify-between text-sm font-medium text-white/80">
               <span>Start 20:00 Uhr</span>

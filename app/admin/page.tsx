@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { shifts } from "@/lib/shifts";
@@ -102,8 +103,17 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-[#f7f3ed] text-[#171512]">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-        <Link className="text-lg font-semibold tracking-[0.18em]" href="/">
-          TUDO
+        <Link className="flex items-center gap-3" href="/" aria-label="TuDo Makerspace">
+          <Image
+            alt=""
+            className="h-12 w-auto"
+            height={48}
+            src="/images/tudo-logo.svg"
+            width={88}
+          />
+          <span className="text-lg font-semibold tracking-[0.18em]">
+            Makerspace
+          </span>
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
           <Link className="transition hover:text-[#171512]" href="/schichten">
