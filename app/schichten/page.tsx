@@ -198,7 +198,7 @@ export default function ShiftPage() {
 
             <label className="grid gap-2">
               <span className="text-sm font-semibold text-[#9b3f2f]">
-                Telefonnummer
+                Telefonnummer (nicht öffentlich einsehbar)
               </span>
               <input
                 className="h-12 rounded-md border border-[#cfc5b5] bg-white px-3 text-[#171512] outline-none transition placeholder:text-[#9f9688] focus:border-[#154b55]"
