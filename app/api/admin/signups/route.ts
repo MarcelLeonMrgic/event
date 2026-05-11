@@ -49,3 +49,42 @@ export async function GET(request: Request) {
     })),
   });
 }
+
+export async function DELETE(request: Request) {
+  if (!process.env.ADMIN_PASSWORD && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "ADMIN_PASSWORD ist noch nicht konfiguriert." },
+      { status: 503 },
+    );
+  }
+
+  if (!isAuthorized(request)) {
+    return NextResponse.json(
+      { error: "Admin-Passwort ist falsch." },
+      { status: 401 },
+    );
+  }
+
+  const body = await request.json().catch(() => null);
+  const id = body && typeof body.id === "string" ? body.id.trim() : "";
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Keine Eintragung ausgewaehlt." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await prisma.signup.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ ok: true, id });
+  } catch {
+    return NextResponse.json(
+      { error: "Diese Eintragung wurde nicht gefunden." },
+      { status: 404 },
+    );
+  }
+}

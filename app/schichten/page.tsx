@@ -99,7 +99,7 @@ export default function ShiftPage() {
       setAlias("");
       setPhone("");
       setMessage(
-        "Eingetragen. Im Schichtplan ist nur dein Anonym sichtbar; die Telefonnummer wurde gespeichert und wird nicht oeffentlich angezeigt.",
+        "Eingetragen. Im Schichtplan ist nur dein Anonym sichtbar; die Telefonnummer wurde gespeichert und wird nicht öffentlich angezeigt.",
       );
     } catch (error) {
       setMessage(
@@ -116,7 +116,7 @@ export default function ShiftPage() {
     <main className="min-h-screen bg-[#f7f3ed] text-[#171512]">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
         <Link className="text-lg font-semibold tracking-[0.18em]" href="/">
-          TUDO
+          TuDo
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
           <Link className="transition hover:text-[#171512]" href="/#programm">
@@ -128,9 +128,7 @@ export default function ShiftPage() {
           <Link className="text-[#171512]" href="/schichten">
             Schichten
           </Link>
-          <Link className="transition hover:text-[#171512]" href="/admin">
-            Admin
-          </Link>
+          
         </div>
       </nav>
 
@@ -140,12 +138,9 @@ export default function ShiftPage() {
             Bar-Schichten · 22. Mai 2026
           </p>
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] text-[#171512] sm:text-6xl">
-            Schichtplan fuer die naechste Party.
+            Schichtplan für die naechste Party.
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f5a51]">
-            Die erste Schicht startet um 20:00 Uhr, die letzte um 05:00 Uhr.
-            Erste und letzte Schicht haben je einen Platz, alle anderen je zwei.
-          </p>
+          
         </div>
 
         <form

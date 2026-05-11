@@ -16,6 +16,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [signups, setSignups] = useState<AdminSignup[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   const signupsByShift = useMemo(() => {
@@ -53,6 +54,48 @@ export default function AdminPage() {
       );
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function deleteSignup(signup: AdminSignup) {
+    const confirmed = window.confirm(
+      `Eintragung von "${signup.alias}" wirklich entfernen?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(signup.id);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/admin/signups", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password,
+        },
+        body: JSON.stringify({ id: signup.id }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Eintragung konnte nicht entfernt werden.");
+      }
+
+      setSignups((current) =>
+        current.filter((entry) => entry.id !== signup.id),
+      );
+      setMessage(`Eintragung von "${signup.alias}" entfernt.`);
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Eintragung konnte nicht entfernt werden.",
+      );
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -147,7 +190,7 @@ export default function AdminPage() {
                   {entries.length > 0 ? (
                     entries.map((entry) => (
                       <div
-                        className="grid gap-1 rounded-md bg-white p-4 sm:grid-cols-[1fr_1fr]"
+                        className="grid gap-4 rounded-md bg-white p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
                         key={entry.id}
                       >
                         <div>
@@ -167,6 +210,16 @@ export default function AdminPage() {
                             {entry.phone}
                           </a>
                         </div>
+                        <button
+                          className="inline-flex h-10 items-center justify-center rounded-md border border-[#cfc5b5] px-4 text-sm font-semibold text-[#9b3f2f] transition hover:border-[#9b3f2f] disabled:cursor-not-allowed disabled:text-[#8d8376]"
+                          disabled={deletingId === entry.id || !password}
+                          onClick={() => deleteSignup(entry)}
+                          type="button"
+                        >
+                          {deletingId === entry.id
+                            ? "Entfernt..."
+                            : "Entfernen"}
+                        </button>
                       </div>
                     ))
                   ) : (
