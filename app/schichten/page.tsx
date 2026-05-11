@@ -1,47 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { shifts } from "@/lib/shifts";
 
 type Signup = {
-  alias: string;
-  phone: string;
-};
-
-type Shift = {
   id: string;
-  time: string;
-  capacity: number;
+  alias: string;
+  shiftId: string;
 };
-
-const shifts: Shift[] = [
-  { id: "20", time: "20:00 - 21:00", capacity: 1 },
-  { id: "21", time: "21:00 - 22:00", capacity: 2 },
-  { id: "22", time: "22:00 - 23:00", capacity: 2 },
-  { id: "23", time: "23:00 - 00:00", capacity: 2 },
-  { id: "00", time: "00:00 - 01:00", capacity: 2 },
-  { id: "01", time: "01:00 - 02:00", capacity: 2 },
-  { id: "02", time: "02:00 - 03:00", capacity: 2 },
-  { id: "03", time: "03:00 - 04:00", capacity: 2 },
-  { id: "04", time: "04:00 - 05:00", capacity: 2 },
-  { id: "05", time: "05:00 - 06:00", capacity: 1 },
-];
 
 export default function ShiftPage() {
   const [selectedShift, setSelectedShift] = useState(shifts[0].id);
   const [alias, setAlias] = useState("");
   const [phone, setPhone] = useState("");
-  const [signups, setSignups] = useState<Record<string, Signup[]>>({});
+  const [signups, setSignups] = useState<Signup[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    async function loadSignups() {
+      try {
+        const response = await fetch("/api/signups");
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error ?? "Schichtplan konnte nicht geladen werden.");
+        }
+
+        setSignups(data.signups);
+      } catch (error) {
+        setMessage(
+          error instanceof Error
+            ? error.message
+            : "Schichtplan konnte nicht geladen werden.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadSignups();
+  }, []);
+
+  const signupsByShift = useMemo(() => {
+    return signups.reduce<Record<string, Signup[]>>((grouped, signup) => {
+      grouped[signup.shiftId] = [...(grouped[signup.shiftId] ?? []), signup];
+      return grouped;
+    }, {});
+  }, [signups]);
 
   const activeShift = useMemo(
     () => shifts.find((shift) => shift.id === selectedShift) ?? shifts[0],
     [selectedShift],
   );
-  const activeSignups = signups[activeShift.id] ?? [];
+  const activeSignups = signupsByShift[activeShift.id] ?? [];
   const freeSpots = activeShift.capacity - activeSignups.length;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const cleanAlias = alias.trim();
@@ -57,18 +74,42 @@ export default function ShiftPage() {
       return;
     }
 
-    setSignups((current) => ({
-      ...current,
-      [activeShift.id]: [
-        ...(current[activeShift.id] ?? []),
-        { alias: cleanAlias, phone: cleanPhone },
-      ],
-    }));
-    setAlias("");
-    setPhone("");
-    setMessage(
-      "Eingetragen. Im Schichtplan ist nur dein Anonym sichtbar; die Telefonnummer waere spaeter nur fuer die Orga bestimmt.",
-    );
+    setIsSubmitting(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/signups", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          alias: cleanAlias,
+          phone: cleanPhone,
+          shiftId: activeShift.id,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Die Anmeldung konnte nicht gespeichert werden.");
+      }
+
+      setSignups((current) => [...current, data.signup]);
+      setAlias("");
+      setPhone("");
+      setMessage(
+        "Eingetragen. Im Schichtplan ist nur dein Anonym sichtbar; die Telefonnummer wurde gespeichert und wird nicht oeffentlich angezeigt.",
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Die Anmeldung konnte nicht gespeichert werden.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -86,6 +127,9 @@ export default function ShiftPage() {
           </Link>
           <Link className="text-[#171512]" href="/schichten">
             Schichten
+          </Link>
+          <Link className="transition hover:text-[#171512]" href="/admin">
+            Admin
           </Link>
         </div>
       </nav>
@@ -122,7 +166,7 @@ export default function ShiftPage() {
                 value={selectedShift}
               >
                 {shifts.map((shift) => {
-                  const taken = signups[shift.id]?.length ?? 0;
+                  const taken = signupsByShift[shift.id]?.length ?? 0;
                   const isFull = taken >= shift.capacity;
 
                   return (
@@ -162,10 +206,10 @@ export default function ShiftPage() {
 
             <button
               className="inline-flex h-12 items-center justify-center rounded-md bg-[#171512] px-6 text-sm font-semibold text-white transition hover:bg-[#3a332b] disabled:cursor-not-allowed disabled:bg-[#8d8376]"
-              disabled={freeSpots <= 0}
+              disabled={freeSpots <= 0 || isSubmitting || isLoading}
               type="submit"
             >
-              In Schicht eintragen
+              {isSubmitting ? "Wird gespeichert..." : "In Schicht eintragen"}
             </button>
 
             {message ? (
@@ -189,7 +233,7 @@ export default function ShiftPage() {
           </div>
 
           {shifts.map((shift) => {
-            const entries = signups[shift.id] ?? [];
+            const entries = signupsByShift[shift.id] ?? [];
             const openSlots = shift.capacity - entries.length;
 
             return (
@@ -201,10 +245,10 @@ export default function ShiftPage() {
                   {shift.time}
                 </time>
                 <div className="flex flex-wrap gap-2">
-                  {entries.map((entry, index) => (
+                  {entries.map((entry) => (
                     <span
                       className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#171512]"
-                      key={`${shift.id}-${entry.alias}-${index}`}
+                      key={entry.id}
                     >
                       {entry.alias}
                     </span>
