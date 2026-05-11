@@ -8,7 +8,7 @@ const schedule = [
   },
   {
     time: "22:00",
-    title: "DJ A",
+    title: "DJ B",
     detail: "Drum n Base",
   },
   {
@@ -124,7 +124,7 @@ export default function Home() {
               Programm
             </p>
             <h2 className="mt-3 text-3xl font-semibold">
-              Die nächste Party auf einen Blick.
+              DJ Time Table
             </h2>
           </div>
           <div className="grid gap-4">
@@ -170,7 +170,7 @@ export default function Home() {
             <div>
               <dt className="text-sm font-semibold text-[#9b3f2f]">Ort</dt>
               <dd className="mt-1 text-[#5f5a51]">
-                TuDo Makerspace, EB Gebaeude
+                TuDo Makerspace, EB Gebäude
               </dd>
             </div>
             <div>
