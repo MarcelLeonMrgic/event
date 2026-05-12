@@ -148,7 +148,7 @@ export default function ShiftPage() {
             Bar-Schichten · 22. Mai 2026
           </p>
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] text-[#171512] sm:text-6xl">
-            Schichtplan für die naechste Party.
+            Schichtplan für die nächste Party.
           </h1>
           
         </div>
