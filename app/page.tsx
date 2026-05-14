@@ -7,6 +7,52 @@ const facts = [
   { value: "2", label: "Bars" },
 ];
 
+const artistLocations = [
+  {
+    location: "Zwille",
+    artists: [
+      "Peat",
+      "Christoffer K. Schöne",
+      "Primatsphäre",
+      "Isabella García",
+      "Light & Matter",
+      "Reiteration",
+      "Soulwash",
+      "cringe_c0re",
+      "Baum",
+      "Clarice",
+      "Dominik",
+    ],
+  },
+  {
+    location: "TuDo · Café",
+    artists: [
+      "Larry Leinwand",
+      "Dub Duck",
+      "Freihaus",
+      "sennen",
+      "Kazimir",
+      "Robin Einberg",
+    ],
+  },
+  {
+    location: "TuDo · Sublevel",
+    artists: [
+      "Flickerchild Bley",
+      "David + Kyra",
+      "Secret Act *live*",
+      "Dired",
+      "MarieMoon",
+      "grundverschieden",
+      "Ventilator Akustik",
+    ],
+  },
+  {
+    location: "Atomic",
+    artists: ["Arcade", "Bassmassage"],
+  },
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f3ed] text-[#171512]">
@@ -24,15 +70,18 @@ export default function Home() {
           </span>
         </a>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
-          <a className="transition hover:text-[#171512]" href="#location">
-            Location
-          </a>
           <Link className="transition hover:text-[#171512]" href="/schichten">
             Schichten
           </Link>
           <Link className="transition hover:text-[#171512]" href="/schichten/zwille">
             Zwille
           </Link>
+          <a className="transition hover:text-[#171512]" href="#artists">
+            Artists
+          </a>
+          <a className="transition hover:text-[#171512]" href="#location">
+            Location
+          </a>
         </div>
       </nav>
 
@@ -114,49 +163,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        className="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-2"
-        id="location"
-      >
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9b3f2f]">
-            Location
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold">
-            Drei Locations, zwei Bars.
-          </h2>
-          <p className="mt-4 max-w-xl leading-8 text-[#5f5a51]">
-            Die KontAKT Party findet in der Zwille, im TuDo Makerspace und im
-            Atomic statt. Für Zwille und Makerspace kannst du dich in
-            Bar-Schichten eintragen; im Atomic gibt es keine Bar-Schichten.
-          </p>
-        </div>
-        <div className="rounded-lg border border-[#ded4c4] bg-[#fffaf3] p-6">
-          <dl className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 1</dt>
-              <dd className="mt-1 text-[#5f5a51]">
-                Zwille
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 2</dt>
-              <dd className="mt-1 text-[#5f5a51]">
-                TuDo Makerspace, EB Gebäude
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 3</dt>
-              <dd className="mt-1 text-[#5f5a51]">Atomic</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Bar-Schichten</dt>
-              <dd className="mt-1 text-[#5f5a51]">Zwille & Makerspace</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
       <section className="bg-[#171512] px-6 py-14 text-white">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <div>
@@ -179,6 +185,86 @@ export default function Home() {
           >
             Zum Zwille-Schichtplan
           </Link>
+        </div>
+      </section>
+
+      <section
+        className="border-y border-[#ded4c4] bg-white/55"
+        id="artists"
+      >
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9b3f2f]">
+              Artists
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold">
+              Line-up nach Location.
+            </h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {artistLocations.map((group) => (
+              <article
+                className="rounded-lg border border-[#ded4c4] bg-[#fffaf3] p-5"
+                key={group.location}
+              >
+                <h3 className="text-2xl font-semibold text-[#154b55]">
+                  {group.location}
+                </h3>
+                <ul className="mt-5 grid gap-2">
+                  {group.artists.map((artist) => (
+                    <li
+                      className="rounded-md bg-white px-4 py-3 text-lg font-semibold text-[#171512]"
+                      key={`${group.location}-${artist}`}
+                    >
+                      {artist}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-2"
+        id="location"
+      >
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9b3f2f]">
+            Location
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold">
+            Drei Locations, zwei Bars.
+          </h2>
+          <p className="mt-4 max-w-xl leading-8 text-[#5f5a51]">
+            Die KontAKT Party findet in der Zwille, im TuDo Makerspace und im
+            Atomic statt. Für Zwille und Makerspace kannst du dich in
+            Bar-Schichten eintragen; im Atomic gibt es keine Bar-Schichten.
+          </p>
+        </div>
+        <div className="rounded-lg border border-[#ded4c4] bg-[#fffaf3] p-6">
+          <dl className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 1</dt>
+              <dd className="mt-1 text-[#5f5a51]">Zwille</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 2</dt>
+              <dd className="mt-1 text-[#5f5a51]">
+                TuDo Makerspace, EB Gebäude
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 3</dt>
+              <dd className="mt-1 text-[#5f5a51]">Atomic</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Bar-Schichten</dt>
+              <dd className="mt-1 text-[#5f5a51]">Zwille & Makerspace</dd>
+            </div>
+          </dl>
         </div>
       </section>
     </main>
