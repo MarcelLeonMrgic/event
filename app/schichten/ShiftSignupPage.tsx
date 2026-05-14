@@ -23,6 +23,7 @@ export default function ShiftSignupPage({ plan }: ShiftSignupPageProps) {
   const [signups, setSignups] = useState<Signup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -121,6 +122,50 @@ export default function ShiftSignupPage({ plan }: ShiftSignupPageProps) {
     }
   }
 
+  async function deleteSignup(signup: Signup) {
+    const confirmed = window.confirm(
+      `Bitte entferne nur deine eigene Schicht, wenn du nicht kommen kannst.\n\nEintragung von "${signup.alias}" wirklich entfernen?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(signup.id);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/signups", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: signup.id,
+          location: plan.key,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Eintragung konnte nicht entfernt werden.");
+      }
+
+      setSignups((current) =>
+        current.filter((entry) => entry.id !== signup.id),
+      );
+      setMessage(`Eintragung von "${signup.alias}" wurde entfernt.`);
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Eintragung konnte nicht entfernt werden.",
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#f7f3ed] text-[#171512]">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
@@ -137,9 +182,6 @@ export default function ShiftSignupPage({ plan }: ShiftSignupPageProps) {
           </span>
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
-          <Link className="transition hover:text-[#171512]" href="/#programm">
-            Programm
-          </Link>
           <Link className="transition hover:text-[#171512]" href="/#location">
             Location
           </Link>
@@ -269,12 +311,20 @@ export default function ShiftSignupPage({ plan }: ShiftSignupPageProps) {
                 </time>
                 <div className="flex flex-wrap gap-2">
                   {entries.map((entry) => (
-                    <span
-                      className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#171512]"
+                    <div
+                      className="inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-[#171512]"
                       key={entry.id}
                     >
-                      {entry.alias}
-                    </span>
+                      <span>{entry.alias}</span>
+                      <button
+                        className="rounded-sm border border-[#ded4c4] px-2 py-1 text-xs font-semibold text-[#9b3f2f] transition hover:border-[#9b3f2f] disabled:cursor-not-allowed disabled:text-[#8d8376]"
+                        disabled={deletingId === entry.id}
+                        onClick={() => deleteSignup(entry)}
+                        type="button"
+                      >
+                        {deletingId === entry.id ? "..." : "Entfernen"}
+                      </button>
+                    </div>
                   ))}
                   {Array.from({ length: openSlots }).map((_, index) => (
                     <span

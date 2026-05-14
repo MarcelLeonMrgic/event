@@ -141,3 +141,48 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  const body = await request.json().catch(() => null);
+
+  if (!body || typeof body !== "object") {
+    return NextResponse.json(
+      { error: "Ungueltige Anfrage." },
+      { status: 400 },
+    );
+  }
+
+  const id = typeof body.id === "string" ? body.id.trim() : "";
+  const location = typeof body.location === "string" ? body.location.trim() : "";
+  const plan = getShiftPlan(location);
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Keine Eintragung ausgewaehlt." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const result = await prisma.signup.deleteMany({
+      where: {
+        id,
+        location: plan.key,
+      },
+    });
+
+    if (result.count === 0) {
+      return NextResponse.json(
+        { error: "Diese Eintragung wurde nicht gefunden." },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({ ok: true, id });
+  } catch {
+    return NextResponse.json(
+      { error: "Diese Eintragung wurde nicht gefunden." },
+      { status: 404 },
+    );
+  }
+}

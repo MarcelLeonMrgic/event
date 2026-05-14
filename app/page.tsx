@@ -1,28 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const schedule = [
-  {
-    time: "20:00",
-    title: "DJ A",
-    detail: "Drum n Base",
-  },
-  {
-    time: "22:00",
-    title: "DJ B",
-    detail: "Drum n Base",
-  },
-  {
-    time: "06:00",
-    title: "Ende & gemeinsamer Abschluss",
-    detail: "Wir beten alle dass das EB Gebäude nie geschlossen wird und gehen dann nach Hause",
-  },
-];
-
 const facts = [
   { value: "22.5.", label: "Nächste Party" },
-  { value: "20-6", label: "Uhrzeit" },
-  { value: "EB", label: "Gebäude" },
+  { value: "3", label: "Locations" },
+  { value: "2", label: "Bars" },
 ];
 
 export default function Home() {
@@ -42,9 +24,6 @@ export default function Home() {
           </span>
         </a>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
-          <a className="transition hover:text-[#171512]" href="#programm">
-            Programm
-          </a>
           <a className="transition hover:text-[#171512]" href="#location">
             Location
           </a>
@@ -60,29 +39,29 @@ export default function Home() {
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-6 pb-14 pt-4 md:grid-cols-[1.05fr_0.95fr] md:items-center md:pb-20">
         <div>
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.22em] text-[#9b3f2f]">
-            22. Mai 2026 · 20:00 bis 06:00 Uhr
+            22. Mai 2026 · TuDo Makerspace · Zwille · Atomic
           </p>
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] text-[#171512] sm:text-6xl lg:text-7xl">
-            Events im TuDo Makerspace.
+            KontAKT Party.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-[#5f5a51]">
-            Die zentrale Seite für kommende Partys und Worshops im TuDo
-            Makerspace der TU Berlin. Hier findest du die nächsten Termine,
-            den Ort und die Schichtplanung für die Bar.
+            Eine Party an drei Orten: Zwille, TuDo Makerspace und Atomic.
+            Bar-Schichten gibt es für Zwille und TuDo Makerspace; das Atomic
+            hat keine Bar.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              className="inline-flex h-12 items-center justify-center rounded-md bg-[#171512] px-6 text-sm font-semibold text-white transition hover:bg-[#3a332b]"
+              className="inline-flex min-h-16 items-center justify-center rounded-md bg-[#171512] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#3a332b] sm:min-w-64"
               href="/schichten"
             >
               Makerspace-Schicht eintragen
             </Link>
-            <a
-              className="inline-flex h-12 items-center justify-center rounded-md border border-[#cfc5b5] px-6 text-sm font-semibold text-[#171512] transition hover:border-[#171512]"
+            <Link
+              className="inline-flex min-h-16 items-center justify-center rounded-md bg-[#171512] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#3a332b] sm:min-w-64"
               href="/schichten/zwille"
             >
               Zwille-Schicht eintragen
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -124,47 +103,13 @@ export default function Home() {
                   Nächstes Event
                 </p>
                 <h2 className="mt-2 text-3xl font-semibold">
-                  Party mit KontAKT
+                  KontAKT Party
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#5f5a51]">
-                  Am 22.5.2026 im TuDo Makerspace, EB Gebäude der TU Berlin.
+                  Am 22.5.2026 in Zwille, TuDo Makerspace und Atomic.
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="border-y border-[#ded4c4] bg-white/55"
-        id="programm"
-      >
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-[0.75fr_1.25fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9b3f2f]">
-              Programm
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold">
-              DJ Time Table
-            </h2>
-          </div>
-          <div className="grid gap-4">
-            {schedule.map((item) => (
-              <article
-                className="grid gap-3 rounded-lg border border-[#ded4c4] bg-[#fffaf3] p-5 sm:grid-cols-[90px_1fr]"
-                key={item.time}
-              >
-                <time className="text-lg font-semibold text-[#154b55]">
-                  {item.time}
-                </time>
-                <div>
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="mt-2 leading-7 text-[#5f5a51]">
-                    {item.detail}
-                  </p>
-                </div>
-              </article>
-            ))}
           </div>
         </div>
       </section>
@@ -178,33 +123,35 @@ export default function Home() {
             Location
           </p>
           <h2 className="mt-3 text-3xl font-semibold">
-            TuDo Makerspace im EB Gebäude
+            Drei Locations, zwei Bars.
           </h2>
           <p className="mt-4 max-w-xl leading-8 text-[#5f5a51]">
-            Die Events finden im TuDo Makerspace der TU Berlin statt. Die Seite
-            ist als dauerhafter Ort für alle zukünftigen Makerspace-Events
-            gedacht.
+            Die KontAKT Party findet in der Zwille, im TuDo Makerspace und im
+            Atomic statt. Für Zwille und Makerspace kannst du dich in
+            Bar-Schichten eintragen; im Atomic gibt es keine Bar-Schichten.
           </p>
         </div>
         <div className="rounded-lg border border-[#ded4c4] bg-[#fffaf3] p-6">
           <dl className="grid gap-5 sm:grid-cols-2">
             <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Ort</dt>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 1</dt>
+              <dd className="mt-1 text-[#5f5a51]">
+                Zwille
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 2</dt>
               <dd className="mt-1 text-[#5f5a51]">
                 TuDo Makerspace, EB Gebäude
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Nächste Party</dt>
-              <dd className="mt-1 text-[#5f5a51]">22.5.2026</dd>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Location 3</dt>
+              <dd className="mt-1 text-[#5f5a51]">Atomic</dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Start</dt>
-              <dd className="mt-1 text-[#5f5a51]">20:00 Uhr</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-semibold text-[#9b3f2f]">Ende</dt>
-              <dd className="mt-1 text-[#5f5a51]">06:00 Uhr</dd>
+              <dt className="text-sm font-semibold text-[#9b3f2f]">Bar-Schichten</dt>
+              <dd className="mt-1 text-[#5f5a51]">Zwille & Makerspace</dd>
             </div>
           </dl>
         </div>
@@ -217,17 +164,17 @@ export default function Home() {
               Schichten
             </p>
             <h2 className="mt-3 text-3xl font-semibold">
-              Hilf an der Bar für eine Stunde mit.
+              Hilf an einer der beiden Bars mit.
             </h2>
           </div>
           <Link
-            className="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 text-sm font-semibold text-[#171512] transition hover:bg-[#f7f3ed]"
+            className="inline-flex min-h-16 items-center justify-center rounded-md bg-white px-8 py-4 text-base font-semibold text-[#171512] transition hover:bg-[#f7f3ed] sm:min-w-64"
             href="/schichten"
           >
             Zum Makerspace-Schichtplan
           </Link>
           <Link
-            className="inline-flex h-12 items-center justify-center rounded-md border border-white/30 px-6 text-sm font-semibold text-white transition hover:border-white"
+            className="inline-flex min-h-16 items-center justify-center rounded-md bg-white px-8 py-4 text-base font-semibold text-[#171512] transition hover:bg-[#f7f3ed] sm:min-w-64"
             href="/schichten/zwille"
           >
             Zum Zwille-Schichtplan
