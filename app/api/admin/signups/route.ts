@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { shifts } from "@/lib/shifts";
+import { getShiftPlan, shiftPlans } from "@/lib/shifts";
 
 function isAuthorized(request: Request) {
   const adminPassword =
@@ -30,19 +30,26 @@ export async function GET(request: Request) {
     );
   }
 
+  const { searchParams } = new URL(request.url);
+  const requestedLocation = searchParams.get("location");
+  const plan = requestedLocation ? getShiftPlan(requestedLocation) : null;
+
   const signups = await prisma.signup.findMany({
-    orderBy: [{ shiftId: "asc" }, { createdAt: "asc" }],
+    where: plan ? { location: plan.key } : undefined,
+    orderBy: [{ location: "asc" }, { shiftId: "asc" }, { createdAt: "asc" }],
     select: {
       id: true,
       alias: true,
       phone: true,
+      location: true,
       shiftId: true,
       createdAt: true,
     },
   });
 
   return NextResponse.json({
-    shifts,
+    plans: Object.values(shiftPlans),
+    shifts: plan ? plan.shifts : shiftPlans.makerspace.shifts,
     signups: signups.map((signup) => ({
       ...signup,
       createdAt: signup.createdAt.toISOString(),

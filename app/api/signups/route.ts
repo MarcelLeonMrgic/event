@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getShift, shifts } from "@/lib/shifts";
+import { getShift, getShiftPlan } from "@/lib/shifts";
 
 type PublicSignup = {
   id: string;
   alias: string;
+  location: string;
   shiftId: string;
   createdAt: string;
 };
@@ -13,30 +14,38 @@ type PublicSignup = {
 function mapSignup(signup: {
   id: string;
   alias: string;
+  location: string;
   shiftId: string;
   createdAt: Date;
 }): PublicSignup {
   return {
     id: signup.id,
     alias: signup.alias,
+    location: signup.location,
     shiftId: signup.shiftId,
     createdAt: signup.createdAt.toISOString(),
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const plan = getShiftPlan(searchParams.get("location"));
+
   const signups = await prisma.signup.findMany({
+    where: { location: plan.key },
     orderBy: { createdAt: "asc" },
     select: {
       id: true,
       alias: true,
+      location: true,
       shiftId: true,
       createdAt: true,
     },
   });
 
   return NextResponse.json({
-    shifts,
+    location: plan.key,
+    shifts: plan.shifts,
     signups: signups.map(mapSignup),
   });
 }
@@ -53,8 +62,10 @@ export async function POST(request: Request) {
 
   const alias = typeof body.alias === "string" ? body.alias.trim() : "";
   const phone = typeof body.phone === "string" ? body.phone.trim() : "";
+  const location = typeof body.location === "string" ? body.location.trim() : "";
   const shiftId = typeof body.shiftId === "string" ? body.shiftId.trim() : "";
-  const shift = getShift(shiftId);
+  const plan = getShiftPlan(location);
+  const shift = getShift(plan.key, shiftId);
 
   if (!shift) {
     return NextResponse.json(
@@ -81,7 +92,10 @@ export async function POST(request: Request) {
     const signup = await prisma.$transaction(
       async (tx) => {
         const taken = await tx.signup.count({
-          where: { shiftId },
+          where: {
+            location: plan.key,
+            shiftId,
+          },
         });
 
         if (taken >= shift.capacity) {
@@ -92,11 +106,13 @@ export async function POST(request: Request) {
           data: {
             alias,
             phone,
+            location: plan.key,
             shiftId,
           },
           select: {
             id: true,
             alias: true,
+            location: true,
             shiftId: true,
             createdAt: true,
           },

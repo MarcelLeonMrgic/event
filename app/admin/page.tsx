@@ -3,12 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
-import { shifts } from "@/lib/shifts";
+import { shiftPlans } from "@/lib/shifts";
 
 type AdminSignup = {
   id: string;
   alias: string;
   phone: string;
+  location: string;
   shiftId: string;
   createdAt: string;
 };
@@ -20,9 +21,15 @@ export default function AdminPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
-  const signupsByShift = useMemo(() => {
-    return signups.reduce<Record<string, AdminSignup[]>>((grouped, signup) => {
-      grouped[signup.shiftId] = [...(grouped[signup.shiftId] ?? []), signup];
+  const signupsByLocationAndShift = useMemo(() => {
+    return signups.reduce<Record<string, Record<string, AdminSignup[]>>>((grouped, signup) => {
+      grouped[signup.location] = {
+        ...(grouped[signup.location] ?? {}),
+        [signup.shiftId]: [
+          ...(grouped[signup.location]?.[signup.shiftId] ?? []),
+          signup,
+        ],
+      };
       return grouped;
     }, {});
   }, [signups]);
@@ -117,7 +124,10 @@ export default function AdminPage() {
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-[#5f5a51] sm:flex">
           <Link className="transition hover:text-[#171512]" href="/schichten">
-            Schichten
+            Makerspace
+          </Link>
+          <Link className="transition hover:text-[#171512]" href="/schichten/zwille">
+            Zwille
           </Link>
           <Link className="text-[#171512]" href="/admin">
             Admin
@@ -185,10 +195,20 @@ export default function AdminPage() {
             </h2>
           </div>
 
-          {shifts.map((shift) => {
-            const entries = signupsByShift[shift.id] ?? [];
+          {Object.values(shiftPlans).map((plan) => (
+            <div className="grid gap-4" key={plan.key}>
+              <div className="pt-4">
+                <h3 className="text-2xl font-semibold">{plan.title}</h3>
+                <p className="mt-2 text-sm font-medium text-[#5f5a51]">
+                  {plan.description}
+                </p>
+              </div>
 
-            return (
+              {plan.shifts.map((shift) => {
+                const entries =
+                  signupsByLocationAndShift[plan.key]?.[shift.id] ?? [];
+
+                return (
               <article
                 className="grid gap-4 rounded-lg border border-[#ded4c4] bg-[#fffaf3] p-5 md:grid-cols-[150px_1fr]"
                 key={shift.id}
@@ -239,8 +259,10 @@ export default function AdminPage() {
                   )}
                 </div>
               </article>
-            );
-          })}
+                );
+              })}
+            </div>
+          ))}
         </div>
       </section>
     </main>

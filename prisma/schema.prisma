@@ -13,6 +13,9 @@ model Signup {
   id        String   @id @default(cuid())
   alias     String
   phone     String
+  location  String   @default("makerspace")
   shiftId   String
   createdAt DateTime @default(now())
+
+  @@index([location, shiftId])
 }

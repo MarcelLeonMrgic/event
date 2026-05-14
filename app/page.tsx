@@ -51,6 +51,9 @@ export default function Home() {
           <Link className="transition hover:text-[#171512]" href="/schichten">
             Schichten
           </Link>
+          <Link className="transition hover:text-[#171512]" href="/schichten/zwille">
+            Zwille
+          </Link>
         </div>
       </nav>
 
@@ -72,13 +75,13 @@ export default function Home() {
               className="inline-flex h-12 items-center justify-center rounded-md bg-[#171512] px-6 text-sm font-semibold text-white transition hover:bg-[#3a332b]"
               href="/schichten"
             >
-              Bar-Schicht eintragen
+              Makerspace-Schicht eintragen
             </Link>
             <a
               className="inline-flex h-12 items-center justify-center rounded-md border border-[#cfc5b5] px-6 text-sm font-semibold text-[#171512] transition hover:border-[#171512]"
-              href="#programm"
+              href="/schichten/zwille"
             >
-              Ablauf ansehen
+              Zwille-Schicht eintragen
             </a>
           </div>
         </div>
@@ -221,7 +224,13 @@ export default function Home() {
             className="inline-flex h-12 items-center justify-center rounded-md bg-white px-6 text-sm font-semibold text-[#171512] transition hover:bg-[#f7f3ed]"
             href="/schichten"
           >
-            Zum Schichtplan
+            Zum Makerspace-Schichtplan
+          </Link>
+          <Link
+            className="inline-flex h-12 items-center justify-center rounded-md border border-white/30 px-6 text-sm font-semibold text-white transition hover:border-white"
+            href="/schichten/zwille"
+          >
+            Zum Zwille-Schichtplan
           </Link>
         </div>
       </section>
